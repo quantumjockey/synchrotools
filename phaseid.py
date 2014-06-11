@@ -15,11 +15,20 @@ def main():
 
 	parser = argparse.ArgumentParser()
 	parser.add_argument('infile', type=argparse.FileType('r'), default=sys.stdin, help='File to be parsed.')
+	parser.add_argument("-d", "--dat", help="Process as .dat file (outputs .txt for parsed files by default.", action="store_true")
+	parser.add_argument("-x", "--x_y", help="Process as .x_y file (outputs .txt for parsed files by default.", action="store_true")
 	args = parser.parse_args()
 
 	fileData = args.infile
 	sourceFileName = fileData.name
-	processingExtension = ".txt"
+
+	if args.dat:
+		processingExtension = ".dat"
+	elif args.x_y:
+		processingExtension = ".x_y"
+	else:
+		processingExtension = ".txt"
+
 	directory = "ParsedData_" + sourceFileName + "(" + processingExtension + ")";
 
 	CreateDirectory(directory)
