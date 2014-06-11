@@ -34,8 +34,6 @@ def main():
 	CreateDirectory(directory)
 	ProcessTextFile(fileData, directory, processingExtension)
 
-	os.system('open "%s"' % directory)
-
 
 # Check for and write/overwrite directory for parsing files
 def CreateDirectory(directory):
