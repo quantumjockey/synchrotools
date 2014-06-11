@@ -20,7 +20,7 @@ def main():
 	args = parser.parse_args()
 
 	fileData = args.infile
-	sourceFileName = fileData.name
+	sourceFile = fileData.name
 
 	if args.dat:
 		processingExtension = ".dat"
@@ -29,7 +29,13 @@ def main():
 	else:
 		processingExtension = ".txt"
 
-	directory = "ParsedData_" + sourceFileName + "(" + processingExtension + ")";
+	head = os.path.split(sourceFile)[0]
+	tail = os.path.split(sourceFile)[1]
+
+	if head != "":
+		head += "/"
+
+	directory = head + "ParsedData_" + tail + "(" + processingExtension + ")";
 
 	CreateDirectory(directory)
 	ProcessTextFile(fileData, directory, processingExtension)
