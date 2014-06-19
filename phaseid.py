@@ -94,13 +94,26 @@ def ProcessTextFile(sourceFile, targetFileDirectory, extension):
 
 # Writes queue containing phase data to file
 def WriteDataToFile(targetFileDirectory, xVal, yVal, extension, phaseData):
+	colWidth = 10
 	path = GetFileNameAndPath(targetFileDirectory, xVal, yVal, extension)
 	print("Writing to " + path)
 	fout = open(path, 'w')
 	while len(phaseData) != 0:
 		data = phaseData.popleft()
-		fout.write(str(data[0]) + "          " + str(data[1]) + "\n")
+		fout.write(FormatData(colWidth, str(data[0])) + FormatData(colWidth, str(data[1])) + "\n")
 	fout.close()
+
+
+# Keeps data columns uniform within each file - for readability
+def FormatData(colWidth, leftJustifiedText):
+	spaceLeft = 0
+	stringLength = len(leftJustifiedText)
+	whitespace = ""
+	if colWidth > stringLength:
+		spaceLeft = colWidth - stringLength
+		for i in range(spaceLeft):
+			whitespace += " "
+	return leftJustifiedText + whitespace
 
 
 # Call main function
