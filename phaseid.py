@@ -1,6 +1,7 @@
 # Description: Allows user to separate data from a synchrotron output file by phase via the terminal.
 # Developer: Nicola B. DiPalma
-# For use with Python v2.7.7
+# Scripted using Python v3.4.1
+# For use with Python v3.x
 
 # Dependencies
 import argparse
