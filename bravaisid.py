@@ -5,6 +5,7 @@
 
 # Dependencies
 import argparse
+import os
 import sys
 
 # script body for file processing
@@ -15,22 +16,22 @@ def main():
 	args = parser.parse_args()
 
 	fileData = args.infile
-	sourceFile = fileData.name
+	sourceFilePath = fileData.name
 
 	dataSet = RemoveEmptyLattices(fileData)
 	print(fileData.name + " has been processed successfully.")
-	print("New dataset (raw):")
-	print(dataSet)
+	print("New dataset (raw): " + str(dataSet))
+	WriteDatasetToFile(dataSet, sourceFilePath)
 
 
 # Removes empty [0,0,0] [h,k,l] lattices from the dataset
-def RemoveEmptyLattices(sourceFile):
+def RemoveEmptyLattices(fileData):
 	data = []
 	filteredData = []
 	targetPath = ""
 	lineIndex = 0
 
-	for line in sourceFile:
+	for line in fileData:
 		if lineIndex > 1:
 			lineOfData = line.replace(" ","").strip("\r\n")
 			data = lineOfData.split(',')
@@ -45,6 +46,25 @@ def RemoveEmptyLattices(sourceFile):
 		lineIndex += 1
 	return filteredData
 
+
+# Writes a dataset to file
+def WriteDatasetToFile(data, path):
+	path = GetFileNameAndPath(path)
+	print("Writing to " + path)
+	fout = open(path, 'w')
+	for row in data:
+		fout.write(row + "\n")
+	fout.close()
+	print("Dataset has been successfully written to " + path)
+
+
+# Generate a file name and path for the current set of data
+def GetFileNameAndPath(sourcePath):
+	head = os.path.split(sourcePath)[0]
+	tail = os.path.split(sourcePath)[1]
+	if head != "":
+		head += "/"
+	return head + "Filtered_set_" + tail
 
 
 # Call main function
