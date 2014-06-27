@@ -17,23 +17,34 @@ def main():
 	fileData = args.infile
 	sourceFile = fileData.name
 
-	RemoveEmptyLattices(fileData)
+	dataSet = RemoveEmptyLattices(fileData)
+	print(fileData.name + " has been processed successfully.")
+	print("New dataset (raw):")
+	print(dataSet)
 
 
-# Removes 0,0,0 hkl lattices from the dataset
+# Removes empty [0,0,0] [h,k,l] lattices from the dataset
 def RemoveEmptyLattices(sourceFile):
-	lineOfData = []
+	data = []
+	filteredData = []
 	targetPath = ""
 	lineIndex = 0
 
 	for line in sourceFile:
 		if lineIndex > 1:
-			lineOfData = line.split(',')
-			for data in lineOfData:
-				if data[0].strip() != "0" and data[1].strip() != "0" and data[2].strip() != "0":
-					print(line)	
-
+			lineOfData = line.replace(" ","").strip("\r\n")
+			data = lineOfData.split(',')
+			numZeroes = 0;
+			i = 0;
+			for dataPoint in data:
+				if i < 3 and dataPoint == "0":
+					numZeroes += 1
+				i += 1
+			if numZeroes < 3:
+				filteredData.append(lineOfData)
 		lineIndex += 1
+	return filteredData
+
 
 
 # Call main function
