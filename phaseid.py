@@ -6,11 +6,11 @@
 # Dependencies
 import argparse
 import os
-import shutil
 import sys
 from collections import deque
 from copy import deepcopy
 from dataFormatting import FormatData
+from pathops import CreateDirectory
 
 # script body for file processing
 def main():
@@ -41,17 +41,6 @@ def main():
 
 	CreateDirectory(directory)
 	ProcessTextFile(fileData, directory, processingExtension)
-
-
-# Check for and write/overwrite directory for parsing files
-def CreateDirectory(directory):
-	if not os.path.exists(directory):
-		print("Creating directory " + directory + " ...")
-		os.mkdir(directory)
-	else:
-		print("Overwriting directory " + directory + " ...")
-		shutil.rmtree(directory)
-		os.mkdir(directory)
 
 
 # Generate a file name and path for the current set of data
