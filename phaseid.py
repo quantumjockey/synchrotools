@@ -10,6 +10,7 @@ import shutil
 import sys
 from collections import deque
 from copy import deepcopy
+from dataFormatting import FormatData
 
 # script body for file processing
 def main():
@@ -102,18 +103,6 @@ def WriteDataToFile(targetFileDirectory, xVal, yVal, extension, phaseData):
 		data = phaseData.popleft()
 		fout.write(FormatData(colWidth, str(data[0])) + FormatData(colWidth, str(data[1])) + "\n")
 	fout.close()
-
-
-# Keeps data columns uniform within each file - for readability
-def FormatData(colWidth, leftJustifiedText):
-	spaceLeft = 0
-	stringLength = len(leftJustifiedText)
-	whitespace = ""
-	if colWidth > stringLength:
-		spaceLeft = colWidth - stringLength
-		for i in range(spaceLeft):
-			whitespace += " "
-	return leftJustifiedText + whitespace
 
 
 # Call main function
