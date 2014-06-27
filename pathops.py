@@ -16,3 +16,12 @@ def CreateDirectory(directory):
 		print("Overwriting directory " + directory + " ...")
 		shutil.rmtree(directory)
 		os.mkdir(directory)
+
+# Returns a newline tailored to the working environment
+def Newline():
+	ending = ""
+	if os.name == "nt":
+		ending = "\r\n"
+	else:
+		ending = "\n"
+	return ending

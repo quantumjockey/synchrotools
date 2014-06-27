@@ -11,6 +11,7 @@ from collections import deque
 from copy import deepcopy
 from dataFormatting import FormatData
 from pathops import CreateDirectory
+from pathops import Newline
 
 # script body for file processing
 def main():
@@ -90,7 +91,7 @@ def WriteDataToFile(targetFileDirectory, xVal, yVal, extension, phaseData):
 	fout = open(path, 'w')
 	while len(phaseData) != 0:
 		data = phaseData.popleft()
-		fout.write(FormatData(colWidth, str(data[0])) + FormatData(colWidth, str(data[1])) + "\n")
+		fout.write(FormatData(colWidth, str(data[0])) + FormatData(colWidth, str(data[1])) + Newline())
 	fout.close()
 
 

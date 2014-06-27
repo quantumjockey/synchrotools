@@ -7,6 +7,7 @@
 import argparse
 import os
 import sys
+from pathops import Newline
 
 # script body for file processing
 def main():
@@ -53,7 +54,7 @@ def WriteDatasetToFile(data, path):
 	print("Writing to " + path)
 	fout = open(path, 'w')
 	for row in data:
-		fout.write(row + "\n")
+		fout.write(row + Newline())
 	fout.close()
 	print("Dataset has been successfully written to " + path)
 
