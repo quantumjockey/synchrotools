@@ -29,7 +29,6 @@ def RemoveEmptyLattices(sourceFile):
 	for line in sourceFile:
 		if lineIndex > 1:
 			lineOfData = line.split(',')
-			writeToFile = False
 			for data in lineOfData:
 				if data[0].strip() != "0" and data[1].strip() != "0" and data[2].strip() != "0":
 					print(line)	
