@@ -6,10 +6,11 @@
 # Dependencies
 import argparse
 import os
-import shutil
 import sys
 from collections import deque
 from copy import deepcopy
+from dataFormatting import FormatData
+from pathops import CreateDirectory
 
 # script body for file processing
 def main():
@@ -40,17 +41,6 @@ def main():
 
 	CreateDirectory(directory)
 	ProcessTextFile(fileData, directory, processingExtension)
-
-
-# Check for and write/overwrite directory for parsing files
-def CreateDirectory(directory):
-	if not os.path.exists(directory):
-		print("Creating directory " + directory + " ...")
-		os.mkdir(directory)
-	else:
-		print("Overwriting directory " + directory + " ...")
-		shutil.rmtree(directory)
-		os.mkdir(directory)
 
 
 # Generate a file name and path for the current set of data
@@ -102,18 +92,6 @@ def WriteDataToFile(targetFileDirectory, xVal, yVal, extension, phaseData):
 		data = phaseData.popleft()
 		fout.write(FormatData(colWidth, str(data[0])) + FormatData(colWidth, str(data[1])) + "\n")
 	fout.close()
-
-
-# Keeps data columns uniform within each file - for readability
-def FormatData(colWidth, leftJustifiedText):
-	spaceLeft = 0
-	stringLength = len(leftJustifiedText)
-	whitespace = ""
-	if colWidth > stringLength:
-		spaceLeft = colWidth - stringLength
-		for i in range(spaceLeft):
-			whitespace += " "
-	return leftJustifiedText + whitespace
 
 
 # Call main function
