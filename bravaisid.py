@@ -27,10 +27,10 @@ def main():
 	print("New dataset (raw): " + str(filteredDataSet))
 
 	if args.separate:
-		# for _set in IdentifyUniqueCrystals(filteredDataSet):
-		# 	for line in _set:
-		# 		print(GetDataIndices(line))
-		# WriteDatasetToFile(_set, sourceFilePath, set_id)
+		prefixedDataSet = PrefixData(filteredDataSet)
+		for temp_set in IdentifyUniqueCrystals(prefixedDataSet):
+			activeSet = [rawData[1] for rawData in prefixedDataSet if rawData[0] == temp_set]
+			WriteDatasetToFile(activeSet, sourceFilePath, temp_set)
 	else:
 		WriteDatasetToFile(filteredDataSet, sourceFilePath, "")
 
@@ -41,25 +41,25 @@ def GetDataIndices(lineOfData):
 	return "[" + compts[0] + "," + compts[1] + "," + compts[2] + "]"
 
 
-# Identifies unique crystals by Miller index
-def IdentifyUniqueCrystals(dataSet):
-	uniqueSets = []
-	i = 0
+# Prefixes each line of data with a string representation of its indices
+def PrefixData(dataSet):
+	prefixedData = []
 	for line in dataSet:
-		if i == 0:
-			parsed = (GetDataIndices(line), [line])
-			uniqueSets.append(parsed)
+		prefixedLine = (GetDataIndices(line), line)
+		prefixedData.append(prefixedLine)
+	return prefixedData
+
+
+# Identifies unique crystals by Miller index
+def IdentifyUniqueCrystals(prefixedDataSet):
+	uniqueCrystals = []
+	for line in prefixedDataSet:
+		if len(uniqueCrystals) == 0:
+			uniqueCrystals.append(line[0])
 		else:
-			for identifier in [_set[0] for _set in uniqueSets]:
-				indices = GetDataIndices(line)
-				if identifier == indices:
-					
-				else:
-					parsed = (GetDataIndices(line), [line])
-					uniqueSets.append(parsed)
-		i += 1
-	uniqueSets.append(dataSet)
-	return uniqueSets
+			if line[0] not in uniqueCrystals:
+				uniqueCrystals.append(line[0])
+	return uniqueCrystals
 
 
 # Removes empty [0,0,0] [h,k,l] lattices from the dataset
