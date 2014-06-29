@@ -7,6 +7,8 @@
 import argparse
 import os
 import sys
+from collections import deque
+from copy import deepcopy
 from pathops import Newline
 
 # script body for file processing
@@ -14,15 +16,53 @@ def main():
 
 	parser = argparse.ArgumentParser()
 	parser.add_argument('infile', type=argparse.FileType('r'), default=sys.stdin, help='File to be parsed.')
+	parser.add_argument("-s", "--separate", help="Separates crystal data by Miller index.", action="store_true")
+	parser.add_argument("-v", "--verbose", help="Prints data to console after filtration is complete.", action="store_true")
 	args = parser.parse_args()
 
 	fileData = args.infile
 	sourceFilePath = fileData.name
 
-	dataSet = RemoveEmptyLattices(fileData)
+	filteredDataSet = RemoveEmptyLattices(fileData)
 	print(fileData.name + " has been processed successfully.")
-	print("New dataset (raw): " + str(dataSet))
-	WriteDatasetToFile(dataSet, sourceFilePath)
+	
+	if args.verbose:
+		print("New dataset (raw): " + str(filteredDataSet))
+
+	if args.separate:
+		prefixedDataSet = PrefixData(filteredDataSet)
+		for temp_set in IdentifyUniqueCrystals(prefixedDataSet):
+			activeSet = [rawData[1] for rawData in prefixedDataSet if rawData[0] == temp_set]
+			WriteDatasetToFile(activeSet, sourceFilePath, temp_set)
+	else:
+		WriteDatasetToFile(filteredDataSet, sourceFilePath, "")
+
+
+# returns the indices for the line of data to be used as an id
+def GetDataIndices(lineOfData):
+	compts = lineOfData.split(",")
+	return "[" + compts[0] + "," + compts[1] + "," + compts[2] + "]"
+
+
+# Prefixes each line of data with a string representation of its indices
+def PrefixData(dataSet):
+	prefixedData = []
+	for line in dataSet:
+		prefixedLine = (GetDataIndices(line), line)
+		prefixedData.append(prefixedLine)
+	return prefixedData
+
+
+# Identifies unique crystals by Miller index
+def IdentifyUniqueCrystals(prefixedDataSet):
+	uniqueCrystals = []
+	for line in prefixedDataSet:
+		if len(uniqueCrystals) == 0:
+			uniqueCrystals.append(line[0])
+		else:
+			if line[0] not in uniqueCrystals:
+				uniqueCrystals.append(line[0])
+	return uniqueCrystals
 
 
 # Removes empty [0,0,0] [h,k,l] lattices from the dataset
@@ -49,8 +89,8 @@ def RemoveEmptyLattices(fileData):
 
 
 # Writes a dataset to file
-def WriteDatasetToFile(data, path):
-	path = GetFileNameAndPath(path)
+def WriteDatasetToFile(data, path, set_id):
+	path = GetFileNameAndPath(path, set_id)
 	print("Writing to " + path)
 	fout = open(path, 'w')
 	for row in data:
@@ -60,12 +100,15 @@ def WriteDatasetToFile(data, path):
 
 
 # Generate a file name and path for the current set of data
-def GetFileNameAndPath(sourcePath):
+def GetFileNameAndPath(sourcePath, set_id):
 	head = os.path.split(sourcePath)[0]
 	tail = os.path.split(sourcePath)[1]
 	if head != "":
 		head += "/"
-	return head + "Filtered_set_" + tail
+	if set_id == "":
+		return head + "Filtered_set_" + tail
+	else:
+		return head + "Filtered_set_" + set_id + "_" + tail	
 
 
 # Call main function
