@@ -17,6 +17,7 @@ def main():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('infile', type=argparse.FileType('r'), default=sys.stdin, help='File to be parsed.')
 	parser.add_argument("-s", "--separate", help="Separates crystal data by Miller index.", action="store_true")
+	parser.add_argument("-v", "--verbose", help="Prints data to console after filtration is complete.", action="store_true")
 	args = parser.parse_args()
 
 	fileData = args.infile
@@ -24,7 +25,9 @@ def main():
 
 	filteredDataSet = RemoveEmptyLattices(fileData)
 	print(fileData.name + " has been processed successfully.")
-	print("New dataset (raw): " + str(filteredDataSet))
+	
+	if args.verbose:
+		print("New dataset (raw): " + str(filteredDataSet))
 
 	if args.separate:
 		prefixedDataSet = PrefixData(filteredDataSet)
